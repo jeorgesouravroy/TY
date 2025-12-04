@@ -1,0 +1,830 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Music, Activity, Brain, Mic, GraduationCap, DollarSign, Layers, User, 
+  Globe, Cpu, CheckCircle, Calendar, Briefcase, Headphones, ArrowRight, 
+  TrendingUp, HeartPulse, Link as LinkIcon, ExternalLink, Play, Zap,
+  Monitor, Speaker, MousePointer2
+} from 'lucide-react';
+
+// --- VISUALIZER COMPONENT (Motion Mechanics) ---
+const AudioVisualizer = ({ color = "bg-cyan-400" }) => (
+  <div className="flex items-end space-x-1 h-8">
+    {[...Array(5)].map((_, i) => (
+      <div 
+        key={i} 
+        className={`w-1.5 rounded-t-sm ${color} animate-music-bar`}
+        style={{ 
+          animationDuration: `${0.4 + Math.random() * 0.5}s`,
+          height: `${20 + Math.random() * 80}%` 
+        }} 
+      />
+    ))}
+  </div>
+);
+
+// --- STYLISH LINK BUTTON ---
+const EvidenceLink = ({ label, url, color = "cyan" }) => (
+  <a 
+    href={url} 
+    target="_blank" 
+    rel="noopener noreferrer"
+    className={`
+      inline-flex items-center space-x-2 px-3 py-1 mt-2 rounded-full 
+      text-[10px] font-bold uppercase tracking-wider 
+      border border-${color}-500/30 bg-${color}-950/30 text-${color}-300 
+      hover:bg-${color}-500 hover:text-black hover:shadow-[0_0_15px_rgba(6,182,212,0.6)] 
+      transition-all duration-300 cursor-pointer group
+    `}
+  >
+    <ExternalLink size={10} className="group-hover:rotate-45 transition-transform" />
+    <span>{label}</span>
+  </a>
+);
+
+// --- DATA STRUCTURE (Full Detail A-Z) ---
+
+const contentData = {
+  mixed: {
+    id: "mixed",
+    title: "Version 1: Mixed (English + Easy Bangla)",
+    subtitle: "Best for your personal clarity and internal use",
+    execSummary: {
+      intro: "Music Mechanics is not just a department; it is a revolution in Bangladeshi healthcare and entertainment. It serves as the primary operational brand, housing four specialized wings that blend science, art, business, and education.",
+      qualifications: [
+        { 
+          label: "Clinical Authority (COMPLETED)", 
+          val: "Bachelor of Physiotherapy (BPT). Licensed Medical Professional.", 
+          detail: "Gives me the legal right to assess, diagnose, and treat patients immediately.",
+          bangla: "BPT (করা আছে): ডাক্তার হিসেবে প্র্যাকটিস করার লাইসেন্স।",
+          link: { label: "Medical License Info", url: "#" },
+          icon: <Activity className="text-emerald-400" />
+        },
+        { 
+          label: "Specialized Credential (TARGET - Priority 1)", 
+          val: "Neurologic Music Therapy Allied Professional (NMTAP).", 
+          detail: "4 Days (30 Hours Intensive). Bypasses the 4-year music therapy degree, allowing legal use of RAS for stroke patients.",
+          bangla: "NMTAP (৪ দিন): প্যারালাইসিস রোগীদের মিউজিক থেরাপি দেওয়ার আন্তর্জাতিক লাইসেন্স।",
+          link: { label: "NMT Training Schedule", url: "https://nmtacademy.co/training-schedule/" },
+          icon: <Brain className="text-pink-400" />
+        },
+        { 
+          label: "Global Innovation (TARGET - Priority 2)", 
+          val: "Berklee 'Music for Wellness' (Professional Certificate).", 
+          detail: "12 Weeks (1 Semester). Provides scientific basis for stress/pain management and adds the 'Berklee' brand.",
+          bangla: "Berklee (১২ সপ্তাহ): আন্তর্জাতিক মানের মিউজিক এবং হেলথ সার্টিফিকেট, যা আমার ব্র্যান্ড ভ্যালু বাড়াবে।",
+          link: { label: "Berklee Course Details", url: "https://online.berklee.edu/courses/music-for-wellness" },
+          icon: <Globe className="text-blue-400" />
+        },
+        { 
+          label: "Technical Mastery (TARGET - Priority 3)", 
+          val: "Apple Certified Pro (Logic Pro X).", 
+          detail: "Self-Paced (~2 Months). Certifies studio as a professional 'Apple-Based Facility'.",
+          bangla: "Logic Pro (২ মাস): অ্যাপল স্টুডিও চালানোর টেকনিক্যাল এক্সপার্ট, যা আমার স্টুডিওকে প্রফেশনাল মান দেবে।",
+          link: { label: "Apple Logic Training", url: "https://www.apple.com/logic-pro/training/" },
+          icon: <Cpu className="text-gray-400" />
+        }
+      ]
+    },
+    authority: {
+      command: "Jeorge Sourav Roy, BPT, NMTAP",
+      subCommand: "(Founder, Purrfect Universe Ltd.)",
+      planets: [
+        { name: "Motion Mechanics", role: "Neurologic Rehab & Music Therapy Specialist", sub: "নিউরো রিহ্যাবিলিটেশন ও মিউজিক থেরাপি স্পেশালিস্ট", color: "emerald", icon: <Activity /> },
+        { name: "Music Mechanics", role: "Founder & Director", sub: "ফাউন্ডার এবং ডিরেক্টর (স্টুডিও ও জ্যামিং প্যাড)", color: "cyan", icon: <Music /> },
+        { name: "NMM Institute BD", role: "Director", sub: "ডিরেক্টর (শিক্ষা এবং ট্রেনিং)", color: "purple", icon: <GraduationCap /> }
+      ]
+    },
+    pillars: [
+      {
+        id: "clinical",
+        title: "Pillar 1: The Clinical Wing (NMM)",
+        subtitle: "Physio Minds Connect with Music Minds",
+        desc: "I prescribe Audio-Pharmaceuticals based on neuroscience.",
+        color: "emerald",
+        services: [
+          { name: "Neuro-Sync (Gait)", target: "Stroke & SCI", protocol: "RAS (Rhythmic Auditory Stimulation)", detail: "Custom beats to match walking speed (cadence) exactly, then speed up.", bangla: "স্ট্রোক রোগীদের হাঁটার গতি এবং ব্যালেন্স ঠিক করা।" },
+          { name: "Motor-Melody (Upper Limb)", target: "Hemiplegic Hands", protocol: "TIMP (Therapeutic Instrumental Music Performance)", detail: "Electronic drum pads at specific angles to force arm extension.", bangla: "যাদের হাত অবশ, তাদের ড্রামস বাজাতে দিয়ে হাতের মুভমেন্ট বাড়ানো।" },
+          { name: "Sensory-Flow (Pain)", target: "Chronic Pain/Anxiety", protocol: "MAR (Music-Assisted Relaxation)", detail: "Low-freq audio & ambient textures to lower cortisol.", bangla: "ব্যথা বা টেনশন কমানোর জন্য শান্ত মিউজিক।" },
+          { name: "Rhythmic-Breath (Respiratory)", target: "Respiratory/Posture", protocol: "OMREX (Oral Motor Respiratory Exercises)", detail: "Vocal toning & wind-instrument simulation for diaphragm.", bangla: "শ্বাসকষ্ট কমানো এবং মেরুদণ্ড সোজা রাখা।" }
+        ]
+      },
+      {
+        id: "commercial",
+        title: "Pillar 2: The Commercial Wing (Jam Mechanics)",
+        subtitle: "The Passive Income Engine",
+        desc: "Professional-grade soundproof space open to ALL musicians. Top-tier Yamaha & Focusrite gear.",
+        color: "cyan",
+        shifts: [
+          { name: "Morning Shift", time: "06:00 AM – 10:00 AM", price: "800 - 1000 BDT" },
+          { name: "Midday Shift", time: "10:00 AM – 02:00 PM", price: "800 - 1000 BDT" },
+          { name: "Afternoon Shift", time: "02:00 PM – 06:00 PM", price: "800 - 1000 BDT" },
+          { name: "Evening Shift", time: "06:00 PM – 10:00 PM", price: "800 - 1000 BDT" }
+        ],
+        bangla: "প্রতিদিন ৪টি শিফট। সকাল ৬টা থেকে রাত ১০টা পর্যন্ত স্টুডিও ভাড়া দেওয়া হবে।"
+      },
+      {
+        id: "creative",
+        title: "Pillar 3: The Creative Wing",
+        subtitle: "The 'Sourav' Legacy",
+        desc: "The Headquarters of the Artist.",
+        color: "blue",
+        points: [
+          { title: "'Sourav' Originals", detail: "Producing Melo-Rock/Pop songs using Logic Pro X on Mac Studio.", sub: "Singing Doctor Brand" },
+          { title: "The Brotherhood Band", detail: "A professional band performing my originals.", sub: "Revenue from Concert Fees" }
+        ]
+      },
+      {
+        id: "education",
+        title: "Pillar 4: The Education Wing (NMM Institute BD)",
+        subtitle: "4 Distinct Certification Courses",
+        desc: "Based on my 4 distinct qualifications (BPT, NMT, Berklee, Apple).",
+        color: "purple",
+        courses: [
+          { title: "Rhythmic Rehabilitation Basics", target: "Jr Physios, Interns", fees: "3,000 – 5,000 BDT", dur: "2-Day Workshop", bangla: "রিদিমিক রিহ্যাব বেসিকস" },
+          { title: "Music for Stress Management", target: "Public, Corporate", fees: "2,000 – 3,000 BDT", dur: "1-Day Seminar", bangla: "স্ট্রেস ম্যানেজমেন্ট" },
+          { title: "Logic Pro X for Therapy", target: "Musicians, Therapists", fees: "5,000 – 8,000 BDT", dur: "4-Week Crash Course", bangla: "লজিক প্রো প্রোডাকশন" },
+          { title: "Home-Based Rhythmic Care", target: "Stroke Patient Families", fees: "1,000 BDT", dur: "4-Hour Session", bangla: "হোম-বেসড কেয়ার" }
+        ]
+      }
+    ],
+    roadmap: [
+      { 
+        phase: "PHASE 1", 
+        title: "The Credentialing (Weeks 1-16)", 
+        desc: "Securing the Authority.",
+        steps: [
+          { name: "NMT Certification", act: "Complete 4-Day Intensive", out: "NMTAP License", link: { l: "NMT Schedule", u: "https://nmtacademy.co/" } },
+          { name: "Berklee Music for Wellness", act: "12-Week Online Semester", out: "Berklee Trained Status", link: { l: "Berklee Course", u: "https://online.berklee.edu/" } },
+          { name: "Apple Logic Pro", act: "Self-study & Exam", out: "Certified Apple Pro", link: { l: "Apple Training", u: "https://training.apple.com/" } }
+        ]
+      },
+      { 
+        phase: "PHASE 2", 
+        title: "The Apple Mac Infrastructure", 
+        desc: "Building the Professional Studio Engine (Months 3-4).",
+        gear: [
+          { name: "Mac Studio (M2 Max)", why: "Logic Pro Native. Stability.", link: "https://www.apple.com/mac-studio/", icon: <Monitor /> },
+          { name: "Focusrite Clarett+ 8Pre", why: "8 Preamps for full band.", link: "https://focusrite.com/clarett-plus", icon: <Zap /> },
+          { name: "Yamaha HS8 Monitors", why: "Industry Standard Mixing.", link: "https://usa.yamaha.com/products/proaudio/speakers/hs_series/", icon: <Speaker /> },
+          { name: "Yamaha DTX8K Drums", why: "Silent Mesh, MIDI Capable.", link: "https://usa.yamaha.com/products/musical_instruments/drums/el_drums/dtx8_series/", icon: <Music /> },
+          { name: "iPad Pro (11\")", why: "Wireless Logic Remote.", link: "https://www.apple.com/ipad-pro/", icon: <MousePointer2 /> }
+        ],
+        steps: [
+          { name: "Launch Jam Mechanics", act: "Open 4-Shift Schedule", out: "Passive Income Starts", link: { l: "Studio Booking", u: "#" } }
+        ]
+      },
+      { 
+        phase: "PHASE 3", 
+        title: "Clinical & Creative Launch", 
+        desc: "Month 5 Operations.",
+        steps: [
+          { name: "Launch NMM Clinical", act: "Treat Stroke/SCI with iPad+Logic", out: "Active Patient Income", link: { l: "Clinical Protocols", u: "#" } },
+          { name: "The Brotherhood Band", act: "Release Originals", out: "Brand Visibility", link: { l: "Band Profile", u: "#" } }
+        ]
+      },
+      { 
+        phase: "PHASE 4", 
+        title: "Educational Expansion", 
+        desc: "Year 1, Q3.",
+        steps: [
+          { name: "Launch NMM Institute", act: "Market 4 Courses", out: "Course Revenue", link: { l: "Institute Portal", u: "#" } }
+        ]
+      }
+    ],
+    finance: [
+      { source: "NMM Clinical Fees", type: "Active", freq: "Daily (Patient Income)" },
+      { source: "Jam Mechanics Rent", type: "Passive", freq: "Daily (4 Shifts)" },
+      { source: "Institute Course Fees", type: "Active", freq: "Monthly" },
+      { source: "Concert Hiring", type: "Active", freq: "Seasonal" },
+      { source: "Streaming Royalties", type: "Passive", freq: "Continuous" }
+    ]
+  },
+  english: {
+    id: "english",
+    title: "Version 2: English Only (Detailed)",
+    subtitle: "Professional Proposal for Investors & Stakeholders",
+    execSummary: {
+      intro: "Music Mechanics is a revolution in Bangladeshi healthcare and entertainment. It operates as the primary operational brand, housing four specialized wings that blend science, art, business, and education.",
+      qualifications: [
+        { 
+          label: "Clinical Authority", 
+          val: "Bachelor of Physiotherapy (BPT).", 
+          detail: "Licensed Medical Professional with legal rights to assess and treat patients.",
+          link: { label: "View License", url: "#" },
+          icon: <Activity className="text-emerald-400" />
+        },
+        { 
+          label: "Specialized Credential", 
+          val: "NMTAP (Neurologic Music Therapy).", 
+          detail: "30 Hours Intensive Training (USA). Legal authority for Rhythmic Auditory Stimulation.",
+          link: { label: "NMT Academy", url: "https://nmtacademy.co/" },
+          icon: <Brain className="text-pink-400" />
+        },
+        { 
+          label: "Global Innovation", 
+          val: "Berklee Music for Wellness.", 
+          detail: "Professional Certificate from Berklee College of Music (USA).",
+          link: { label: "Berklee Online", url: "https://online.berklee.edu/" },
+          icon: <Globe className="text-blue-400" />
+        },
+        { 
+          label: "Technical Mastery", 
+          val: "Apple Certified Pro (Logic Pro X).", 
+          detail: "Ensures professional studio quality standards and technical trust.",
+          link: { label: "Apple Certs", url: "https://training.apple.com/" },
+          icon: <Cpu className="text-gray-400" />
+        }
+      ]
+    },
+    authority: {
+      command: "Jeorge Sourav Roy, BPT, NMTAP",
+      subCommand: "Founder, Purrfect Universe Ltd.",
+      planets: [
+        { name: "Motion Mechanics", role: "Neurologic Rehab Specialist", sub: "NMT Allied Professional", color: "emerald", icon: <Activity /> },
+        { name: "Music Mechanics", role: "Founder & Director", sub: "Studio Operations", color: "cyan", icon: <Music /> },
+        { name: "NMM Institute BD", role: "Director", sub: "Educational Wing", color: "purple", icon: <GraduationCap /> }
+      ]
+    },
+    pillars: [
+      {
+        id: "clinical",
+        title: "Pillar 1: Clinical Wing (NMM)",
+        subtitle: "Neurologic Music Mechanics",
+        desc: "Where Physio Minds Connect with Music Minds.",
+        color: "emerald",
+        services: [
+          { name: "Neuro-Sync", target: "Stroke & SCI", protocol: "RAS", detail: "Rhythmic Auditory Stimulation to lock brain into movement." },
+          { name: "Motor-Melody", target: "Hemiplegic Hands", protocol: "TIMP", detail: "Therapeutic Instrumental Music Performance with drums." },
+          { name: "Sensory-Flow", target: "Chronic Pain", protocol: "MAR", detail: "Music-Assisted Relaxation to lower cortisol." },
+          { name: "Rhythmic-Breath", target: "Respiratory", protocol: "OMREX", detail: "Oral Motor and Respiratory Exercises." }
+        ]
+      },
+      {
+        id: "commercial",
+        title: "Pillar 2: Commercial Wing",
+        subtitle: "Jam Mechanics",
+        desc: "The Passive Income Engine. Professional soundproof space for all musicians.",
+        color: "cyan",
+        shifts: [
+          { name: "Morning", time: "06:00 - 10:00", price: "800 - 1000 BDT" },
+          { name: "Midday", time: "10:00 - 14:00", price: "800 - 1000 BDT" },
+          { name: "Afternoon", time: "14:00 - 18:00", price: "800 - 1000 BDT" },
+          { name: "Evening", time: "18:00 - 22:00", price: "800 - 1000 BDT" }
+        ]
+      },
+      {
+        id: "creative",
+        title: "Pillar 3: Creative Wing",
+        subtitle: "The Sourav Legacy",
+        desc: "Original Productions & Performance.",
+        color: "blue",
+        points: [
+          { title: "Originals Production", detail: "Broadcast quality tracks via Logic Pro X.", sub: "Artist Brand" },
+          { title: "The Brotherhood Band", detail: "Concert performance and streaming revenue.", sub: "Live Performance" }
+        ]
+      },
+      {
+        id: "education",
+        title: "Pillar 4: Education Wing",
+        subtitle: "NMM Institute BD",
+        desc: "Revenue generation through specialized certification.",
+        color: "purple",
+        courses: [
+          { title: "Rhythmic Rehab Basics", target: "Jr Physios", fees: "3-5k BDT", dur: "2 Days" },
+          { title: "Music for Stress Mgmt", target: "Corporates", fees: "2-3k BDT", dur: "1 Day" },
+          { title: "Logic Pro X Training", target: "Musicians", fees: "5-8k BDT", dur: "4 Weeks" },
+          { title: "Home-Based Care", target: "Families", fees: "1k BDT", dur: "4 Hours" }
+        ]
+      }
+    ],
+    roadmap: [
+      { 
+        phase: "PHASE 1", 
+        title: "The Credentialing", 
+        desc: "Weeks 1-16",
+        steps: [
+          { name: "NMT Certification", act: "Complete Training", out: "License Secured", link: { l: "Verify NMT", u: "https://nmtacademy.co/" } },
+          { name: "Berklee Wellness", act: "12-Week Course", out: "Global Brand", link: { l: "Verify Berklee", u: "https://online.berklee.edu/" } },
+          { name: "Apple Certification", act: "Pro Exam", out: "Tech Mastery", link: { l: "Apple Pro", u: "https://training.apple.com/" } }
+        ]
+      },
+      { 
+        phase: "PHASE 2", 
+        title: "Infrastructure Build", 
+        desc: "Months 3-4",
+        gear: [
+          { name: "Mac Studio", why: "Core Engine", link: "https://www.apple.com/mac-studio/", icon: <Monitor /> },
+          { name: "Focusrite 8Pre", why: "Audio Interface", link: "https://focusrite.com", icon: <Zap /> },
+          { name: "Yamaha HS8", why: "Monitoring", link: "https://usa.yamaha.com", icon: <Speaker /> },
+          { name: "Yamaha DTX8K", why: "Therapy Drums", link: "https://usa.yamaha.com", icon: <Music /> },
+          { name: "iPad Pro", why: "Controller", link: "https://apple.com/ipad", icon: <MousePointer2 /> }
+        ],
+        steps: [
+          { name: "Launch Studio", act: "Open Doors", out: "Revenue Start", link: { l: "Booking System", u: "#" } }
+        ]
+      },
+      { 
+        phase: "PHASE 3", 
+        title: "Clinical & Creative Launch", 
+        desc: "Month 5",
+        steps: [
+          { name: "NMM Clinical", act: "Patient Care", out: "Daily Income", link: { l: "Services", u: "#" } },
+          { name: "Brotherhood Band", act: "Music Release", out: "Royalties", link: { l: "Spotify", u: "#" } }
+        ]
+      },
+      { 
+        phase: "PHASE 4", 
+        title: "Education Expansion", 
+        desc: "Year 1 Q3",
+        steps: [
+          { name: "NMM Institute", act: "Launch Courses", out: "Tuition Fees", link: { l: "Apply Now", u: "#" } }
+        ]
+      }
+    ],
+    finance: [
+      { source: "NMM Clinical Fees", type: "Active", freq: "Daily" },
+      { source: "Jam Mechanics Rent", type: "Passive", freq: "Daily" },
+      { source: "Institute Course Fees", type: "Active", freq: "Monthly" },
+      { source: "Streaming Royalties", type: "Passive", freq: "Continuous" },
+      { source: "Concert Hiring", type: "Active", freq: "Seasonal" }
+    ]
+  },
+  bangla: {
+    id: "bangla",
+    title: "Version 3: Bangla Detailed (বিস্তারিত বাংলা)",
+    subtitle: "Staff, Family এবং Local Understanding এর জন্য",
+    execSummary: {
+      intro: "Music Mechanics কেবল একটি ডিপার্টমেন্ট নয়; এটি বাংলাদেশের স্বাস্থ্যসেবা এবং বিনোদন জগতে একটি বিপ্লব। এটি চারটি প্রধান বিভাগ নিয়ে গঠিত যা বিজ্ঞান, শিল্প, ব্যবসা এবং শিক্ষাকে একত্রিত করে।",
+      qualifications: [
+        { 
+          label: "ডাক্তারি ক্ষমতা (সম্পন্ন)", 
+          val: "BPT (Bachelor of Physiotherapy).", 
+          detail: "লাইসেন্সপ্রাপ্ত মেডিকেল প্রফেশনাল। রোগী দেখা, ডায়াগনসিস এবং চিকিৎসার পূর্ণ আইনগত অধিকার।",
+          link: { label: "লাইসেন্স দেখুন", url: "#" },
+          icon: <Activity className="text-emerald-400" />
+        },
+        { 
+          label: "স্পেশাল পাওয়ার (টার্গেট)", 
+          val: "NMTAP (Neurologic Music Therapy).", 
+          detail: "আমেরিকা থেকে ৪ দিনের ইনটেনসিভ ট্রেনিং। প্যারালাইসিস রোগীদের জন্য রিদিমিক অডিটরি স্টিমুলেশন (RAS) ব্যবহারের আন্তর্জাতিক লাইসেন্স।",
+          link: { label: "NMT ট্রেনিং", url: "https://nmtacademy.co/" },
+          icon: <Brain className="text-pink-400" />
+        },
+        { 
+          label: "গ্লোবাল নলেজ (টার্গেট)", 
+          val: "Berklee Music for Wellness.", 
+          detail: "বার্কলে কলেজ অফ মিউজিক (USA) থেকে ১২ সপ্তাহের কোর্স। পেইন এবং স্ট্রেস ম্যানেজমেন্টের বৈজ্ঞানিক ভিত্তি।",
+          link: { label: "বার্কলে কোর্স", url: "https://online.berklee.edu/" },
+          icon: <Globe className="text-blue-400" />
+        },
+        { 
+          label: "টেকনিক্যাল এক্সপার্ট (টার্গেট)", 
+          val: "Apple Certified Pro (Logic Pro X).", 
+          detail: "অ্যাপল অথরাইজড প্রফেশনাল। স্টুডিওর সাউন্ড কোয়ালিটি এবং টেকনিক্যাল সেটআপের গ্যারান্টি।",
+          link: { label: "অ্যাপল ট্রেনিং", url: "https://training.apple.com/" },
+          icon: <Cpu className="text-gray-400" />
+        }
+      ]
+    },
+    authority: {
+      command: "জর্জে সৌরভ রায়, BPT, NMTAP",
+      subCommand: "ফাউন্ডার, পারফেক্ট ইউনিভার্স লিমিটেড",
+      planets: [
+        { name: "Motion Mechanics", role: "নিউরো রিহ্যাব স্পেশালিস্ট", sub: "চিকিৎসা বিভাগ ও মিউজিক থেরাপি", color: "emerald", icon: <Activity /> },
+        { name: "Music Mechanics", role: "ফাউন্ডার ও ডিরেক্টর", sub: "স্টুডিও ব্যবসা ও অপারেশন", color: "cyan", icon: <Music /> },
+        { name: "NMM Institute BD", role: "ইন্সটিটিউট ডিরেক্টর", sub: "শিক্ষা ও ট্রেনিং বিভাগ", color: "purple", icon: <GraduationCap /> }
+      ]
+    },
+    pillars: [
+      {
+        id: "clinical",
+        title: "চিকিৎসা বিভাগ (Clinical Wing)",
+        subtitle: "Neurologic Music Mechanics (NMM)",
+        desc: "যেখানে ফিজিও মাইন্ড এবং মিউজিক মাইন্ড এক হয়।",
+        color: "emerald",
+        services: [
+          { name: "Neuro-Sync (Gait)", target: "স্ট্রোক ও প্যারালাইসিস", protocol: "RAS প্রটোকল", detail: "রোগীর হাঁটার তালের সাথে মিলিয়ে কাস্টম মিউজিক তৈরি করে হাঁটার গতি বাড়ানো।" },
+          { name: "Motor-Melody (Hand)", target: "হাতের অবশতা", protocol: "TIMP প্রটোকল", detail: "ইলেকট্রনিক ড্রামস প্যাড নির্দিষ্ট এঙ্গেলে রেখে হাতের মুভমেন্ট এক্সারসাইজ করানো।" },
+          { name: "Sensory-Flow (Pain)", target: "ক্রনিক পেইন/ব্যথা", protocol: "MAR প্রটোকল", detail: "বিশেষ ধরণের লো-ফ্রিকোয়েন্সি মিউজিক দিয়ে কর্টিসল কমিয়ে ব্যথা কমানো।" },
+          { name: "Rhythmic-Breath", target: "শ্বাসকষ্ট ও পোশ্চার", protocol: "OMREX প্রটোকল", detail: "ভোকাল টোনিং এবং উইন্ড ইন্সট্রুমেন্ট সিমুলেশন দিয়ে ফুসফুসের ক্ষমতা বাড়ানো।" }
+        ]
+      },
+      {
+        id: "commercial",
+        title: "ব্যবসা বিভাগ (Jam Mechanics)",
+        subtitle: "প্যাসিভ ইনকাম ইঞ্জিন",
+        desc: "প্রফেশনাল সাউন্ডপ্রুফ স্পেস যা সবার জন্য উন্মুক্ত। ইয়ামাহা এবং ফোকাসরাইট গিয়ার সমৃদ্ধ।",
+        color: "cyan",
+        shifts: [
+          { name: "মর্নিং শিফট", time: "০৬:০০ - ১০:০০", price: "৮০০ - ১০০০ টাকা" },
+          { name: "মিড-ডে শিফট", time: "১০:০০ - ০২:০০", price: "৮০০ - ১০০০ টাকা" },
+          { name: "আফটারনুন শিফট", time: "০২:০০ - ০৬:০০", price: "৮০০ - ১০০০ টাকা" },
+          { name: "ইভিনিং শিফট", time: "০৬:০০ - ১০:০০", price: "৮০০ - ১০০০ টাকা" }
+        ]
+      },
+      {
+        id: "creative",
+        title: "ক্রিয়েটিভ বিভাগ (Creative Wing)",
+        subtitle: "Sourav Legacy",
+        desc: "আর্টিস্টের হেডকোয়ার্টার।",
+        color: "blue",
+        points: [
+          { title: "Sourav Originals", detail: "Logic Pro X এবং Mac Studio ব্যবহার করে নিজস্ব গান প্রোডাকশন।", sub: "সিংগিং ডাক্তার ব্র্যান্ড" },
+          { title: "The Brotherhood Band", detail: "নিজস্ব ব্যান্ডের মাধ্যমে কনসার্ট এবং লাইভ পারফর্মেন্স।", sub: "শো থেকে ইনকাম" }
+        ]
+      },
+      {
+        id: "education",
+        title: "শিক্ষা বিভাগ (NMM Institute)",
+        subtitle: "৪টি স্পেশাল কোর্স",
+        desc: "আমার ৪টি যোগ্যতার (BPT, NMT, Berklee, Apple) ওপর ভিত্তি করে।",
+        color: "purple",
+        courses: [
+          { title: "রিদিমিক রিহ্যাব বেসিকস", target: "জুনিয়র ফিজিওথেরাপিস্ট", fees: "৩০০০-৫০০০ টাকা", dur: "২ দিনের ওয়ার্কশপ" },
+          { title: "স্ট্রেস ম্যানেজমেন্ট", target: "কর্পোরেট/সাধারণ মানুষ", fees: "২০০০-৩০০০ টাকা", dur: "১ দিনের সেমিনার" },
+          { title: "লজিক প্রো প্রোডাকশন", target: "মিউজিশিয়ান/থেরাপিস্ট", fees: "৫০০০-৮০০০ টাকা", dur: "৪ সপ্তাহের কোর্স" },
+          { title: "হোম-বেসড কেয়ার", target: "রোগীর পরিবার", fees: "১০০০ টাকা", dur: "৪ ঘন্টার সেশন" }
+        ]
+      }
+    ],
+    roadmap: [
+      { 
+        phase: "ফেইজ ১", 
+        title: "কোর্স এবং সার্টিফিকেশন (সপ্তাহ ১-১৬)", 
+        desc: "অথরিটি এবং লাইসেন্স নিশ্চিত করা।",
+        steps: [
+          { name: "NMT সার্টিফিকেশন", act: "৪ দিনের ট্রেনিং", out: "NMTAP লাইসেন্স", link: { l: "NMT শিডিউল", u: "https://nmtacademy.co/" } },
+          { name: "বার্কলে মিউজিক", act: "১২ সপ্তাহের কোর্স", out: "বার্কলে ব্র্যান্ডিং", link: { l: "বার্কলে তথ্য", u: "https://online.berklee.edu/" } },
+          { name: "অ্যাপল লজিক প্রো", act: "সেলফ স্টাডি ও এক্সাম", out: "অ্যাপল এক্সপার্ট", link: { l: "অ্যাপল রিসোর্স", u: "https://training.apple.com/" } }
+        ]
+      },
+      { 
+        phase: "ফেইজ ২", 
+        title: "অ্যাপল ম্যাক স্টুডিও ইনফ্রাস্ট্রাকচার", 
+        desc: "মাস ৩-৪: প্রফেশনাল স্টুডিও ইঞ্জিন তৈরি।",
+        gear: [
+          { name: "Mac Studio (M2 Max)", why: "লজিক প্রোর জন্য সেরা। স্ট্যাবিলিটি।", link: "https://www.apple.com/mac-studio/", icon: <Monitor /> },
+          { name: "Focusrite Clarett+", why: "৮টি প্রি-এম্প ফুল ব্যান্ডের জন্য।", link: "https://focusrite.com", icon: <Zap /> },
+          { name: "Yamaha HS8", why: "সঠিক মিক্সিং এর জন্য মনিটর।", link: "https://usa.yamaha.com", icon: <Speaker /> },
+          { name: "Yamaha DTX8K", why: "সাইলেন্ট প্র্যাকটিস ড্রামস।", link: "https://usa.yamaha.com", icon: <Music /> },
+          { name: "iPad Pro", why: "লজিক রিমোট কন্ট্রোল।", link: "https://apple.com/ipad", icon: <MousePointer2 /> }
+        ],
+        steps: [
+          { name: "জ্যাম মেকানিক্স চালু", act: "৪টি শিফট ওপেন করা", out: "প্যাসিভ ইনকাম শুরু", link: { l: "বুকিং দিন", u: "#" } }
+        ]
+      },
+      { 
+        phase: "ফেইজ ৩", 
+        title: "ক্লিনিক্যাল ও ব্যান্ডের শুরু", 
+        desc: "মাস ৫: অপারেশনাল কার্যক্রম।",
+        steps: [
+          { name: "NMM ক্লিনিক্যাল", act: "রোগী দেখা শুরু (iPad+Logic)", out: "প্রতিদিনের ইনকাম", link: { l: "সার্ভিস ডিটেইলস", u: "#" } },
+          { name: "ব্রাদারহুড ব্যান্ড", act: "প্রথম গান রিলিজ", out: "ব্র্যান্ড ভিজিবিলিটি", link: { l: "গান শুনুন", u: "#" } }
+        ]
+      },
+      { 
+        phase: "ফেইজ ৪", 
+        title: "শিক্ষা বিস্তার", 
+        desc: "১ম বছর শেষে।",
+        steps: [
+          { name: "NMM ইন্সটিটিউট", act: "৪টি কোর্সের মার্কেটিং", out: "কোর্স ফি ইনকাম", link: { l: "ভর্তি হন", u: "#" } }
+        ]
+      }
+    ],
+    finance: [
+      { source: "NMM ক্লিনিক্যাল ফিস", type: "একটিভ", freq: "প্রতিদিন (রোগী)" },
+      { source: "Jam Mechanics ভাড়া", type: "প্যাসিভ", freq: "প্রতিদিন (৪ শিফট)" },
+      { source: "Institute কোর্স ফিস", type: "একটিভ", freq: "প্রতি মাসে" },
+      { source: "অনলাইন রয়্যালটি", type: "প্যাসিভ", freq: "সবসময়" },
+      { source: "কনসার্ট ইনকাম", type: "একটিভ", freq: "সিজনাল" }
+    ]
+  }
+};
+
+// --- Logos ---
+const PurrfectLogo = () => (
+  <div className="w-14 h-14 relative flex items-center justify-center bg-black/60 backdrop-blur-md rounded-full border border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.4)] group-hover:scale-110 transition-transform duration-500">
+    <div className="absolute w-10 h-10 rounded-full bg-gradient-to-tr from-purple-600 to-blue-600 opacity-80 animate-pulse" />
+    <div className="z-10 text-white font-black text-xs tracking-tighter drop-shadow-lg">PURR</div>
+    <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-ping" />
+  </div>
+);
+
+const MusicMechanicsLogo = () => (
+  <div className="w-14 h-14 relative flex items-center justify-center bg-black/60 backdrop-blur-md rounded-xl border border-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.4)] transform rotate-3 hover:rotate-0 transition-all duration-500 group-hover:scale-110">
+    <Music className="w-7 h-7 text-cyan-400 z-10" />
+    <div className="absolute inset-0 border-2 border-dashed border-slate-600/50 rounded-xl animate-spin-slow" />
+  </div>
+);
+
+const MotionMechanicsLogo = () => (
+  <div className="w-12 h-12 relative flex items-center justify-center bg-emerald-950/40 rounded-full border border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.4)] hover:shadow-[0_0_25px_rgba(16,185,129,0.7)] transition-all duration-500">
+    <Activity className="w-6 h-6 text-emerald-400 animate-pulse" />
+  </div>
+);
+
+// --- MAIN COMPONENT ---
+
+export default function MusicMechanicsCanvas() {
+  const [activeVersion, setActiveVersion] = useState('mixed');
+  const data = contentData[activeVersion];
+
+  const getGradient = () => {
+    switch(activeVersion) {
+      case 'mixed': return 'from-slate-950 via-blue-950 to-black';
+      case 'english': return 'from-black via-slate-900 to-slate-950';
+      case 'bangla': return 'from-slate-950 via-emerald-950/30 to-black';
+      default: return 'from-slate-950 via-blue-950 to-black';
+    }
+  };
+
+  return (
+    <div className={`min-h-screen bg-gradient-to-br ${getGradient()} text-slate-100 font-sans selection:bg-cyan-500 selection:text-black overflow-x-hidden flex`}>
+      
+      {/* SIDEBAR NAVIGATION (Desktop) / TOP (Mobile) */}
+      <nav className="fixed md:sticky md:top-0 bottom-0 md:h-screen w-full md:w-24 bg-black/40 backdrop-blur-xl border-t md:border-t-0 md:border-r border-white/10 z-50 flex md:flex-col justify-around md:justify-center items-center py-2 md:py-0 space-x-0 md:space-y-8">
+         <div onClick={() => setActiveVersion('mixed')} className={`cursor-pointer group flex flex-col items-center space-y-1 ${activeVersion === 'mixed' ? 'opacity-100' : 'opacity-50 hover:opacity-100'}`}>
+            <div className={`p-3 rounded-xl transition-all duration-500 ${activeVersion === 'mixed' ? 'bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.6)]' : 'bg-slate-800'}`}>
+               <Layers size={24} className="text-white" />
+            </div>
+            <span className="text-[10px] uppercase font-bold tracking-widest hidden md:block">Mixed</span>
+         </div>
+         <div onClick={() => setActiveVersion('english')} className={`cursor-pointer group flex flex-col items-center space-y-1 ${activeVersion === 'english' ? 'opacity-100' : 'opacity-50 hover:opacity-100'}`}>
+            <div className={`p-3 rounded-xl transition-all duration-500 ${activeVersion === 'english' ? 'bg-cyan-600 shadow-[0_0_20px_rgba(8,145,178,0.6)]' : 'bg-slate-800'}`}>
+               <Globe size={24} className="text-white" />
+            </div>
+             <span className="text-[10px] uppercase font-bold tracking-widest hidden md:block">Eng</span>
+         </div>
+         <div onClick={() => setActiveVersion('bangla')} className={`cursor-pointer group flex flex-col items-center space-y-1 ${activeVersion === 'bangla' ? 'opacity-100' : 'opacity-50 hover:opacity-100'}`}>
+            <div className={`p-3 rounded-xl transition-all duration-500 ${activeVersion === 'bangla' ? 'bg-emerald-600 shadow-[0_0_20px_rgba(5,150,105,0.6)]' : 'bg-slate-800'}`}>
+               <User size={24} className="text-white" />
+            </div>
+             <span className="text-[10px] uppercase font-bold tracking-widest hidden md:block">Ban</span>
+         </div>
+      </nav>
+
+      {/* Main Content Area */}
+      <div className="flex-1 pb-24 md:pb-0">
+        
+        {/* HEADER */}
+        <header className="relative pt-10 pb-20 px-6 md:px-12 border-b border-white/5 overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none" />
+          
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center">
+            <div className="space-y-4 z-10">
+               <div className="flex items-center space-x-2 mb-4">
+                  <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold tracking-widest flex items-center space-x-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>SYSTEM ONLINE v21.0</span>
+                  </div>
+                  <AudioVisualizer color="bg-cyan-400" />
+               </div>
+               <h1 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-200 to-blue-500 drop-shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+                 MUSIC<br/>MECHANICS
+               </h1>
+               <p className="text-xl text-slate-400 max-w-2xl font-light">{data.subtitle}</p>
+            </div>
+            
+            <div className="flex space-x-6 mt-8 md:mt-0 z-10 group cursor-pointer">
+              <PurrfectLogo />
+              <MusicMechanicsLogo />
+            </div>
+          </div>
+        </header>
+
+        {/* CONTENT BODY */}
+        <main className="max-w-7xl mx-auto px-6 md:px-12 -mt-10 space-y-20">
+          
+          {/* Executive Summary & Authority Grid */}
+          <section className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            {/* Executive Summary Card */}
+            <div className="lg:col-span-8 bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-3xl p-8 hover:border-cyan-500/30 transition-all duration-500 shadow-2xl">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="p-3 bg-cyan-950/50 rounded-xl border border-cyan-500/20">
+                  <Brain className="w-6 h-6 text-cyan-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white tracking-tight">Executive Summary</h2>
+              </div>
+              <p className="text-slate-300 leading-relaxed text-lg mb-8 font-light border-l-2 border-cyan-500/50 pl-4">
+                {data.execSummary.intro}
+              </p>
+              
+              <div className="grid sm:grid-cols-2 gap-4">
+                {data.execSummary.qualifications.map((q, idx) => (
+                  <div key={idx} className="bg-black/40 p-5 rounded-2xl border border-white/5 hover:border-white/20 hover:bg-white/5 transition-all duration-300 group">
+                    <div className="flex justify-between items-start mb-2">
+                       <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{q.label}</div>
+                       <div className="opacity-50 group-hover:opacity-100 transition-opacity scale-90">{q.icon}</div>
+                    </div>
+                    <div className="text-white font-bold text-base mb-1">{q.val}</div>
+                    <div className="text-slate-400 text-xs leading-relaxed mb-2">{q.detail}</div>
+                    {q.bangla && <div className="text-slate-500 text-[10px] italic border-t border-white/5 pt-2 mt-2">{q.bangla}</div>}
+                    {q.link && <EvidenceLink label={q.link.label} url={q.link.url} />}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Authority / Command Center */}
+            <div className="lg:col-span-4 space-y-6">
+               <div className="bg-gradient-to-b from-slate-900 via-slate-900 to-black border border-white/10 rounded-3xl p-8 relative overflow-hidden group hover:border-purple-500/30 transition-all duration-500">
+                  <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity duration-700">
+                     <User size={120} />
+                  </div>
+                  <div className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-4 flex items-center space-x-2">
+                    <span className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
+                    <span>Command Center</span>
+                  </div>
+                  <div className="text-2xl font-bold text-white">{data.authority.command}</div>
+                  <div className="text-sm text-slate-400 mb-8">{data.authority.subCommand}</div>
+                  
+                  <div className="space-y-4 relative z-10">
+                    {data.authority.planets.map((planet, i) => (
+                      <div key={i} className={`flex items-center space-x-4 p-3 rounded-2xl bg-white/5 border border-white/5 hover:bg-${planet.color}-900/20 hover:border-${planet.color}-500/30 transition-all cursor-default`}>
+                        <div className={`p-2 rounded-lg bg-${planet.color}-950 text-${planet.color}-400`}>
+                          {planet.icon}
+                        </div>
+                        <div>
+                          <div className={`font-bold text-${planet.color}-400 text-sm`}>{planet.name}</div>
+                          <div className="text-[10px] text-slate-300 uppercase tracking-wider">{planet.role}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+               </div>
+            </div>
+          </section>
+
+          {/* THE 4 PILLARS */}
+          <section>
+            <div className="flex items-center space-x-4 mb-8">
+              <Layers className="text-cyan-400 w-8 h-8" />
+              <h2 className="text-3xl font-bold text-white">Operational Pillars</h2>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              {data.pillars.map((pillar) => (
+                <div key={pillar.id} className={`bg-slate-900/40 backdrop-blur-xl border border-${pillar.color}-500/20 rounded-3xl p-8 hover:shadow-[0_0_40px_rgba(0,0,0,0.5)] transition-all duration-500 group relative overflow-hidden`}>
+                   {/* Background Glow */}
+                   <div className={`absolute -right-20 -top-20 w-60 h-60 bg-${pillar.color}-500/10 rounded-full blur-3xl group-hover:bg-${pillar.color}-500/20 transition-all duration-700`} />
+                   
+                   <div className="relative z-10">
+                     <div className="flex justify-between items-start mb-6">
+                        <div>
+                           <h3 className={`text-2xl font-bold text-${pillar.color}-400`}>{pillar.title}</h3>
+                           <p className={`text-${pillar.color}-200/60 text-sm uppercase tracking-wider mt-1`}>{pillar.subtitle}</p>
+                        </div>
+                        <div className={`p-3 rounded-full bg-${pillar.color}-950 border border-${pillar.color}-500/30`}>
+                           {pillar.id === 'clinical' ? <HeartPulse size={20} className={`text-${pillar.color}-400`} /> :
+                            pillar.id === 'commercial' ? <DollarSign size={20} className={`text-${pillar.color}-400`} /> :
+                            pillar.id === 'creative' ? <Mic size={20} className={`text-${pillar.color}-400`} /> :
+                            <GraduationCap size={20} className={`text-${pillar.color}-400`} />}
+                        </div>
+                     </div>
+                     
+                     <p className="text-slate-300 text-sm mb-6 font-light">{pillar.desc}</p>
+                     
+                     {/* SERVICES / SHIFTS / POINTS RENDERER */}
+                     <div className="space-y-3">
+                       {pillar.services && pillar.services.map((svc, i) => (
+                         <div key={i} className={`p-4 rounded-xl bg-${pillar.color}-950/20 border border-${pillar.color}-500/10 hover:border-${pillar.color}-500/40 transition-all`}>
+                            <div className="flex justify-between text-white font-bold text-sm mb-1">
+                               <span>{svc.name}</span>
+                               <span className={`text-[10px] px-2 py-0.5 rounded bg-${pillar.color}-900/50 text-${pillar.color}-300`}>{svc.protocol}</span>
+                            </div>
+                            <div className="text-xs text-slate-400 mb-1">{svc.detail}</div>
+                            {svc.bangla && <div className={`text-[10px] text-${pillar.color}-300/60 italic`}>{svc.bangla}</div>}
+                         </div>
+                       ))}
+                       
+                       {pillar.shifts && (
+                         <div className="grid grid-cols-2 gap-3">
+                           {pillar.shifts.map((shift, i) => (
+                             <div key={i} className="text-center p-3 rounded-xl bg-black/40 border border-cyan-900/30">
+                               <div className="text-cyan-300 font-bold text-sm">{shift.name}</div>
+                               <div className="text-[10px] text-slate-400 uppercase">{shift.time}</div>
+                               <div className="text-xs text-white font-mono mt-1">{shift.price}</div>
+                             </div>
+                           ))}
+                         </div>
+                       )}
+                       
+                       {pillar.points && pillar.points.map((pt, i) => (
+                         <div key={i} className="flex items-start space-x-3 text-slate-300 text-sm p-3 bg-blue-950/20 rounded-xl border border-blue-500/10">
+                           <CheckCircle className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                           <div>
+                             <div className="font-bold text-white">{pt.title}</div>
+                             <div className="text-xs text-slate-400">{pt.detail}</div>
+                           </div>
+                         </div>
+                       ))}
+
+                       {pillar.courses && pillar.courses.map((crs, i) => (
+                         <div key={i} className="flex justify-between items-center p-3 rounded-xl bg-purple-950/20 border border-purple-500/10 hover:bg-purple-950/40 transition-all">
+                            <div>
+                              <div className="text-white font-bold text-sm">{crs.title}</div>
+                              <div className="text-[10px] text-purple-300">{crs.target} • {crs.dur}</div>
+                            </div>
+                            <div className="text-right">
+                               <div className="text-white font-mono text-xs font-bold">{crs.fees}</div>
+                            </div>
+                         </div>
+                       ))}
+                     </div>
+                   </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* STRATEGIC ROADMAP */}
+          <section className="relative">
+             <div className="flex items-center space-x-4 mb-8">
+               <TrendingUp className="text-blue-500 w-8 h-8" />
+               <h2 className="text-3xl font-bold text-white">Strategic Roadmap</h2>
+             </div>
+
+             <div className="relative border-l border-slate-700 ml-6 md:ml-10 space-y-12 pb-12">
+               {data.roadmap.map((phase, i) => (
+                 <div key={i} className="relative pl-12 md:pl-16 group">
+                    {/* Timeline Dot */}
+                    <div className={`absolute left-[-5px] md:left-[-6px] top-0 w-3 h-3 rounded-full border border-slate-900 shadow-[0_0_10px_rgba(59,130,246,0.5)] ${i === 1 ? 'bg-cyan-500 animate-pulse' : 'bg-blue-600'}`} />
+                    
+                    <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4 mb-6">
+                       <span className="self-start px-3 py-1 rounded bg-blue-900/30 text-blue-400 text-xs font-bold uppercase tracking-widest border border-blue-500/20">{phase.phase}</span>
+                       <div>
+                          <h3 className="text-2xl font-bold text-white">{phase.title}</h3>
+                          <p className="text-slate-400 text-sm">{phase.desc}</p>
+                       </div>
+                    </div>
+
+                    {/* GEAR GRID (Only for Phase 2) */}
+                    {phase.gear && (
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                        {phase.gear.map((g, gi) => (
+                          <div key={gi} className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center hover:border-cyan-500 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all group/gear relative overflow-hidden">
+                             <div className="absolute inset-0 bg-gradient-to-t from-cyan-900/20 to-transparent opacity-0 group-hover/gear:opacity-100 transition-opacity" />
+                             <div className="text-cyan-400 mb-2 flex justify-center">{g.icon}</div>
+                             <div className="text-white font-bold text-xs mb-1">{g.name}</div>
+                             <div className="text-[10px] text-slate-500 leading-tight mb-2">{g.why}</div>
+                             <a href={g.link} target="_blank" rel="noopener" className="inline-block p-1 bg-slate-800 rounded-full text-cyan-500 hover:bg-cyan-500 hover:text-black transition-colors">
+                               <ExternalLink size={12} />
+                             </a>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Steps List */}
+                    <div className="space-y-3">
+                      {phase.steps.map((step, si) => (
+                        <div key={si} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all">
+                           <div className="flex items-start space-x-3 mb-2 sm:mb-0">
+                              <CheckCircle size={18} className="text-emerald-500 mt-0.5" />
+                              <div>
+                                 <div className="text-white font-bold text-sm">{step.name}</div>
+                                 <div className="text-xs text-slate-400">{step.act}</div>
+                              </div>
+                           </div>
+                           <div className="flex items-center space-x-4 pl-8 sm:pl-0">
+                              <div className="text-xs font-mono text-purple-300 bg-purple-900/20 px-2 py-1 rounded">Out: {step.out}</div>
+                              {step.link && <EvidenceLink label={step.link.l} url={step.link.u} color="blue" />}
+                           </div>
+                        </div>
+                      ))}
+                    </div>
+                 </div>
+               ))}
+             </div>
+          </section>
+
+          {/* FINANCIALS */}
+          <section className="pb-20">
+             <div className="bg-gradient-to-r from-slate-900 to-black border border-slate-800 rounded-3xl p-8">
+               <div className="flex items-center space-x-3 mb-6">
+                  <div className="p-2 bg-green-900/30 rounded-lg text-green-400">
+                    <DollarSign />
+                  </div>
+                  <h2 className="text-2xl font-bold text-white">Financial Ecosystem</h2>
+               </div>
+               
+               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                 {data.finance.map((item, i) => (
+                   <div key={i} className="p-4 rounded-xl bg-white/5 border border-white/5 text-center hover:bg-white/10 transition-all group">
+                     <div className={`text-[10px] uppercase font-bold tracking-widest mb-2 ${item.type.includes('Active') || item.type.includes('একটিভ') ? 'text-green-400' : 'text-purple-400'}`}>
+                       {item.type}
+                     </div>
+                     <div className="text-white font-bold text-sm md:text-base mb-1 group-hover:text-cyan-400 transition-colors">{item.source}</div>
+                     <div className="text-xs text-slate-500">{item.freq}</div>
+                   </div>
+                 ))}
+               </div>
+             </div>
+          </section>
+
+        </main>
+      </div>
+    </div>
+  );
+}
